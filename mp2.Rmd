@@ -20,10 +20,13 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 
+
 library(tidyverse)
 library(ggplot2)
 
 
 ggplot(house_elections, aes(x = runoff_votes, y = general_votes)) +
   geom_line()
+
+
 ```
