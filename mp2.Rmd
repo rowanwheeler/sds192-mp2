@@ -26,10 +26,13 @@ library(ggplot2)
 library(dplyr)
 
 
-candidates <- contributions %>%
+comparison <- contributions %>%
   full_join(candidates,by = "cand_id")
-candidates
+comparison
 
+comparison %>% 
+  select(cand_id,cand_ici, entity_type)
+comparison
 
 
 ```
