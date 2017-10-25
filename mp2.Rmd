@@ -32,7 +32,7 @@ comparison
 
 comparison %>% 
   select(cand_id,cand_ici, entity_type)
-comparison
+
 
 
 ```
