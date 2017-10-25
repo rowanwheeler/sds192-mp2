@@ -27,9 +27,12 @@ library(dplyr)
 
 
 
-candidates <- contributions %>%
-  full_join(candidates, by = "cand_id")
-candidates
+comparison <- contributions %>%
+  full_join(candidates,by = "cand_id")
+comparison
+comparison %>% 
+  select(cand_id,cand_ici, entity_type)
+
 ```
 
 
