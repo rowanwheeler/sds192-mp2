@@ -26,13 +26,21 @@ library(ggplot2)
 library(dplyr)
 
 
-comparison <- contributions %>%
-  full_join(candidates,by = "cand_id")
-comparison
 
-comparison %>% 
-  select(cand_id,cand_ici, entity_type)
-
-
-
+candidates <- contributions %>%
+  full_join(candidates, by = "cand_id")
+candidates
 ```
+
+
+join candidates with contributions by cand_id
+compare cand_ici with entity_type
+we want to see where the money is coming from for challengers vs incumbents vs open seats CAN = Candidate
+CCM = Candidate Committee
+COM = Committee
+IND = Individual (a person)
+ORG = Organization (not a committee and not a person)
+PAC = Political Action Committee
+PTY = Party Organization
+
+
