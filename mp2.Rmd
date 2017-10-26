@@ -22,7 +22,6 @@ load("contributions.rda")
 
 
 library(tidyverse)
-library(ggplot2)
 library(dplyr)
 
 
@@ -32,6 +31,7 @@ comparison <- contributions %>%
 comparison
 comparison %>% 
   select(cand_id,cand_ici, entity_type)
+
 
 ```
 
