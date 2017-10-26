@@ -25,7 +25,7 @@ library(tidyverse)
 library(dplyr)
 
 
-
+#why Yuqing failed to push her code
 comparison <- contributions %>%
   full_join(candidates,by = "cand_id")
 comparison
