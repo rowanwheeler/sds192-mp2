@@ -24,15 +24,24 @@ load("contributions.rda")
 library(tidyverse)
 library(dplyr)
 
-
-#why Yuqing failed to push her code
 comparison <- contributions %>%
   full_join(candidates,by = "cand_id")
 comparison
 comparison %>% 
   select(cand_id,cand_ici, entity_type)
 
+require(lubridate)
+comparison <- comparison %>%
+  mutate(transaction_date= mdy(`transaction_dt`))
+glimpse(comparison)
 
+
+
+ggplot(data = comparison, aes(x =transaction_date, y = transaction_amt/1000000)) +  
+  guides(color = guide_legend("entity type")) +
+  geom_point(aes(color = entity_type)) +
+  scale_y_continuous("transaction amount/million", labels = scales::dollar) +
+  scale_x_date("transaction date")
 ```
 
 
