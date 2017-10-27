@@ -37,11 +37,6 @@ comparison<-comparison %>%
 comparison$entity_type[comparison$entity_type==""] <-NA
 
 
-
-
-
-
-
 glimpse(comparison)
 
 
@@ -56,10 +51,6 @@ ggplot(data = comparison, aes(x =transaction_date, y = transaction_amt/1000000, 
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 ```
 
-```{r}
-#comparison[comparison$entity_type==""] <- NA
-comparison[is.na(comparison)] <- NA
-```
 
 join candidates with contributions by cand_id
 compare cand_ici with entity_type
