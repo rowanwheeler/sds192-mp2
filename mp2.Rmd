@@ -8,8 +8,6 @@ output: html_document
 
 ## Loading the data
 
-This project is so interesting and relevant to my life!
-
 ```{r, include=FALSE}
 
 ```
@@ -24,28 +22,32 @@ load("contributions.rda")
 library(tidyverse)
 library(dplyr)
 
+
+
 comparison <- contributions %>%
-  full_join(candidates,by = "cand_id")
-comparison
-comparison %>% 
-  select(cand_id,cand_ici, entity_type)
+  full_join(candidates,by = "cand_id") %>% 
+  select(cand_id, cand_ici, entity_type) %>%
+  group_by(cand_ici) 
+  
+ 
 
 require(lubridate)
 comparison<-comparison %>%
   mutate(transaction_date= mdy(`transaction_dt`)) %>%
   filter(transaction_date> "2010-01-01" & transaction_date <"2012-12-31")
 #is.na(data) <- data==""
-glimpse(comparison)
+
+
 
 
 require(scales)
-ggplot(data = comparison, aes(x =transaction_date, y = transaction_amt/1000000, color = entity_type, shape = entity_type)) +  
-  scale_shape_manual(values=10:nlevels(comparison$entity_type)) + 
-  labs(title = "change of transaction amount among between 2010 and 2012 on different entity type")+
+ggplot(data = comparison, aes(x = transaction_date, y = transaction_amt/1000000, color = entity_type)) +  
+   geom_point() +
   guides(color = guide_legend("entity type")) +
-  geom_point() +
+ 
+  scale_x_date(labels =  date_format("%Y-%m"), date_breaks = "3 months") +
+   labs(title = "change of transaction amount among between 2010 and 2012 on different entity type") +
   scale_y_continuous("transaction amount/million", labels = scales::dollar) +
-  scale_x_date(labels =  date_format("%Y-%m"), date_breaks = "3 months") + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
 ```
 
@@ -64,4 +66,4 @@ ORG = Organization (not a committee and not a person)
 PAC = Political Action Committee
 PTY = Party Organization
 
-
+  
