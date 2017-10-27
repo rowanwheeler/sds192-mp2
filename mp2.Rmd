@@ -26,16 +26,15 @@ library(dplyr)
 
 comparison <- contributions %>%
   full_join(candidates,by = "cand_id") %>% 
-  select(cand_id, cand_ici, entity_type) %>%
+  select(cand_id, cand_ici, entity_type,transaction_dt, transaction_amt) %>%
   group_by(cand_ici) 
-  
+head(comparison)
  
 
 require(lubridate)
 comparison<-comparison %>%
   mutate(transaction_date= mdy(`transaction_dt`)) %>%
   filter(transaction_date> "2010-01-01" & transaction_date <"2012-12-31")
-#is.na(data) <- data==""
 
 
 
