@@ -10,10 +10,6 @@ output: html_document
 
 This project is so interesting and relevant to my life!
 
-```{r, include=FALSE}
-
-```
-
 ```{r,message=FALSE}
 load("house_elections.rda")
 load("candidates.rda")
@@ -33,15 +29,12 @@ contributions1<-contributions %>%
 require(lubridate)
 contributions2<-contributions1 %>%
   mutate(transaction_date= mdy(`transaction_dt`)) %>%
-
   filter(transaction_date> "2012-01-01" & transaction_date <"2012-12-31")
-comparison$entity_type[comparison$entity_type==""] <-NA
 
-  filter(transaction_date> "2010-01-01" & transaction_date <"2012-12-31")
 contributions2$entity_type[contributions2$entity_type==""] <-NA
 
 glimpse(contributions2)
-
+```
 install.packages("plotly")
 require(plotly)
 require(scales)
@@ -55,14 +48,15 @@ m <-ggplot(data = contributions2, aes(x =transaction_date, y = transaction_amt/1
   geom_smooth() +
   facet_wrap(~entity_type)+
   scale_y_continuous("transaction amount/million", labels = scales::dollar) +
-  scale_x_date(labels =  date_format("%Y-%m"), date_breaks = "3 months") + 
+  scale_x_date(date_breaks = "3 months") + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
-ggplotly(p = m)
+  m
 ```
+ggplotly(p = m)
 
 
 ```{r,message=FALSE}
-ggplot(data = comparison, aes(x = entity_type))+ 
+ggplot(data = contributions2, aes(x = entity_type))+ 
   labs(title = "change of transaction amount among between 2010 and 2012 on different entity type")+
   guides(color = guide_legend("entity type")) +
   geom_bar(aes(position= transaction_amt/1000000,fill = entity_type),stats="identity")
