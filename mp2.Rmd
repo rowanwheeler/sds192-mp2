@@ -5,7 +5,23 @@ date: "October 31, 2017"
 output: html_document
 ---
 
-First, we 
+Of the millions of dollars spent in U.S. elections, most attention is focused on the rise of SuperPACS and other Political Action Committees (PACS). However, as our data shows, organizations (entities who are neither committees nor individuals) contribute the vast majority of donations. We compared the transactions made by different entities, or organized groups of people, based on when they made contributions, the total amount they contributed, and whether they funded positive or negative advertising. The entities we compared included:
+  CAN = Candidate (money from the candidate themselves, ex. Mitt Romney)
+  
+  CCM = Candidate Committee (money from a committee directly affiliated with a candidate, ex. Mitt Romney for President)
+  
+  COM = Committee (other committees formed to fund legislation or candidates)
+  
+  IND = Individual (a person)
+  
+  ORG = Organization (not a committee and not a person, ex. United Steelworkers or Amazon)
+  
+  PAC = Political Action Committee (a committee not directly affiliated with a candidate that supports specific legislation or candidates, ex. Tim Ryan for U.S. Congress)
+  
+  PTY = Party Organization (a political party, ex. Democratic Party)
+  
+  First, we compared the activity of different entities over 2012. Candidates, Candidate Committees, Individuals, and Parties all contributed relatively small, constant amounts of money, with Individuals' contributions fluctuating. Parties and Candidates' contibutions increased from October to December, corresponding with elections in November. We were forced to separate Organizations and PACs into separate graphs with different scales, since their monetary transactions were much larger than the other entities. Both groups contributed the highest transaction amounts in July, with contributions dramatically dropping afterwards. 
+  The clear different in the scale of transactions of total donations is made clear by our next graph, which represents the total donations transacted by each entity type over 2012. While Organizations contributed almost 1.2 billion dollars, no other entity type contributed more than 300 million dollars. We also compared the spending done by entity groups on positive and negative advertising, as defined by transaction types 24E and 24A. These types represent, respectively, independent expenditures for and against candidates. These independent expenditures were mostly made by Organizations, with the majority of the transactions made going towards positive advertising. 
 
 
 ```{r,message=FALSE, warning  = FALSE}
@@ -67,10 +83,13 @@ contributions3<-contributions2 %>%
     labs(title = "Transaction Amounts by Entity Type in 2012")+
     guides(color = guide_legend("entity type")) +
     geom_smooth() +
-    scale_y_continuous("Transaction Amount ", labels=scales::dollar) +
+    scale_y_continuous("Transaction Amount (millions)", labels=scales::dollar) +
     scale_x_date("Transaction Date", date_breaks = "2 months")
   }
+#first graph represents Organization spending, second graph represents PAC spending
   lapply(large_entity, FUN= plot)
+  
+
  
 ```
   
