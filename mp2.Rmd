@@ -47,7 +47,7 @@ m <-ggplot(data = contributions2, aes(x =transaction_date, y = transaction_amt/1
   guides(color = guide_legend("entity type")) +
   geom_smooth() +
   facet_wrap(~entity_type)+
-  scale_y_continuous("transaction amount/million", labels = scales::dollar) +
+  scale_y_continuous("Transaction Amount/million", labels = scales::dollar) +
   scale_x_date(date_breaks = "3 months") + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1))
   m
@@ -56,26 +56,24 @@ ggplotly(p = m)
 
 
 ```{r,message=FALSE}
-ggplot(data = contributions2, aes(x = entity_type, y =transaction_amt/1000000, fill = entity_type))+
-  labs(title = "Transaction Amount in 2012 for Different Entity Type")+
-  guides(color = guide_legend("entity type")) +
+
+ggplot(data = contributions2, aes(x = entity_type, y =transaction_amt/1000000))+
+  labs(x = "Transaction Type", y="Transaction Amount/million", title = "Transaction Amount in 2012 for Different Entity Type") +
+  scale_y_continuous(labels = scales::dollar) +
   geom_bar(stat="identity")
+  
+  
 ```
 
 ```{r,message=FALSE}
- 
+contribution3<- contributions2 %>%
+  filter(transaction_type== c("24E","24A"))
 
-contributions2 %>%
-  filter(transaction_type =="24A",transaction_type =="24E", entity_type == "CCM")
-glimpse(contributions2)
-ggplot(data = contributions2,aes(x = transaction_type, y = transaction_amt/1000000, fill = transaction_type))+
+ggplot(data = contribution3,aes(x = transaction_type, y = transaction_amt/1000000, fill = entity_type))+
+  labs( x = "Entity Type", y="Transaction Amount/million", title = "Transaction Amount in 2012 for Different Entity Type", fill="Transaction Type")+
+  scale_y_continuous(labels = scales::dollar) +
   geom_bar(stat = "identity")
-
 ```
-
-plot<- function(data=data1,entity)
-lapply(contributions2$entity_type, FUN = plot)
-
 
 join candidates with contributions by cand_id
 compare cand_ici with entity_type
