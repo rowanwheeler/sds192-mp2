@@ -83,14 +83,4 @@ ggplot(data = contribution3,aes(x = transaction_type, y = transaction_amt/100000
   geom_bar(stat = "identity")
 ```
 
-join candidates with contributions by cand_id
-compare cand_ici with entity_type
-we want to see where the money is coming from for challengers vs incumbents vs open seats CAN = Candidate
-CCM = Candidate Committee
-COM = Committee
-IND = Individual (a person)
-ORG = Organization (not a committee and not a person)
-PAC = Political Action Committee
-PTY = Party Organization
-
 
