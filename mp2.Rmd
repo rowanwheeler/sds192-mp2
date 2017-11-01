@@ -1,9 +1,12 @@
 ---
 title: "Mini-Project 2"
-author: "Your Name Here"
+author: "Yuqing Geng, Rowan Wheeler, Nichole Yao"
 date: "October 31, 2017"
 output: html_document
 ---
+
+First, we 
+
 
 ```{r,message=FALSE, warning  = FALSE}
 load("house_elections.rda")
@@ -14,12 +17,15 @@ require(scales)
 library(tidyverse)
 library(dplyr)
 
+##combining the contributions and candidates data tables
 contributions <- contributions %>%
   full_join(candidates,by = "cand_id")
 
+##selecting relevant columns
 contributions1<-contributions %>% 
   select(cand_id,cand_ici, entity_type, transaction_amt, transaction_dt,transaction_type)
 
+##restricting data to 2012, change transaction date to manageable format
 require(lubridate)
 contributions2<-contributions1 %>%
   mutate(transaction_date= mdy(`transaction_dt`)) %>%
@@ -28,20 +34,24 @@ contributions2<-contributions1 %>%
 contributions2$entity_type[contributions2$entity_type==""] <-NA
 glimpse(contributions2)
 
+##graph movement of money transacted throughout 2012 by different entity types
+## organizations and PACs changed to a larger scale in order to focus on smaller changes of other entity types, which are faceted
 contributions3<-contributions2 %>%
   filter(entity_type == c("CCM", "CAN", "COM", "PTY", "IND"))
 
-  m <-ggplot(data = contributions3, aes(x =transaction_date, y = transaction_amt, color = entity_type)) +
+  money <-ggplot(data = contributions3, aes(x =transaction_date, y = transaction_amt, color = entity_type)) +
     scale_shape_manual(values=8:nlevels(contributions2$entity_type)) + 
-    labs(title = "change of transaction amount among between 2010 and 2012 based on entity type")+
-    guides(color = guide_legend("entity type")) +
+    labs(title = "Transaction Amounts by Entity Type in 2012")+
+    guides(color = guide_legend("Entity Type")) +
     geom_smooth() +
     facet_wrap(~entity_type)+
-    scale_y_continuous("transaction amount", labels=scales::dollar) +
-    scale_x_date(date_breaks = "2 months") + 
+    scale_y_continuous("Transaction Amount", labels=scales::dollar) +
+    scale_x_date("Transaction Date", date_breaks = "2 months") + 
     theme(axis.text.x = element_text(angle = 60, hjust = 1))
-    m
   
+    money
+  
+
   large_entity<-c("ORG","PAC")
  
    entity_plot<-function(entities) {
@@ -50,13 +60,15 @@ contributions3<-contributions2 %>%
    }
    lapply(large_entity,FUN=entity_plot)
    
+##graphs of ORG and PAC, using different scales than other faceted graphs
+   
   plot<-function(entities2){
     ggplot(entity_plot(entities2), aes(x =transaction_date, y = transaction_amt/1000)) +
-    labs(title = "change of transaction amount among between 2010 and 2012 based on entity type")+
+    labs(title = "Transaction Amounts by Entity Type in 2012")+
     guides(color = guide_legend("entity type")) +
     geom_smooth() +
-    scale_y_continuous("transaction amount", labels=scales::dollar) +
-    scale_x_date(date_breaks = "2 months")
+    scale_y_continuous("Transaction Amount ", labels=scales::dollar) +
+    scale_x_date("Transaction Date", date_breaks = "2 months")
   }
   lapply(large_entity, FUN= plot)
  
@@ -64,9 +76,10 @@ contributions3<-contributions2 %>%
   
 
 ```{r,message=FALSE}
+##graph of total monetary transactions made for each entity type
 
 ggplot(data = contributions2, aes(x = entity_type, y =transaction_amt/1000000))+
-  labs(x = "Transaction Type", y="Transaction Amount/million", title = "Transaction Amount in 2012 for Different Entity Type") +
+  labs(x = "Transaction Type", y="Transaction Amount (millions)", title = "Total Transaction Amount in 2012 for Different Entity Types") +
   scale_y_continuous(labels = scales::dollar) +
   geom_bar(stat="identity")
   
@@ -74,13 +87,15 @@ ggplot(data = contributions2, aes(x = entity_type, y =transaction_amt/1000000))+
 ```
 
 ```{r,message=FALSE}
-contribution3<- contributions2 %>%
+##create additional dataset to compare positive and negative advertising and which entity types are contributing towards which types of advertising
+
+contribution3 <- contributions2 %>%
   filter(transaction_type== c("24E","24A"))
 
+
 ggplot(data = contribution3,aes(x = transaction_type, y = transaction_amt/1000000, fill = entity_type))+
-  labs( x = "Entity Type", y="Transaction Amount/million", title = "Transaction Amount in 2012 for Different Entity Type", fill="Transaction Type")+
+  labs( x = "Money Contributed For (24E) or Against (24A) Candidates", y="Transaction Amount (millions)", title = "Type of Spending Done by Entity Types", fill="Entity Type")+
   scale_y_continuous(labels = scales::dollar) +
   geom_bar(stat = "identity")
 ```
-
 
