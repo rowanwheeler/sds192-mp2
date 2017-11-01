@@ -10,13 +10,12 @@ output: html_document
 
 This project is so interesting and relevant to my life!
 
-```{r,message=FALSE}
+```{r,message=FALSE, warning  = FALSE}
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
-
-
+require(scales)
 library(tidyverse)
 library(dplyr)
 
@@ -32,28 +31,43 @@ contributions2<-contributions1 %>%
   filter(transaction_date> "2012-01-01" & transaction_date <"2012-12-31")
 
 contributions2$entity_type[contributions2$entity_type==""] <-NA
-
 glimpse(contributions2)
-```
-install.packages("plotly")
-require(plotly)
-require(scales)
-```
 
-```{r,message=FALSE}
-m <-ggplot(data = contributions2, aes(x =transaction_date, y = transaction_amt/1000000, color = entity_type, shape = entity_type)) +  
-  scale_shape_manual(values=10:nlevels(contributions2$entity_type)) + 
-  labs(title = "change of transaction amount among between 2010 and 2012 on different entity type")+
-  guides(color = guide_legend("entity type")) +
-  geom_smooth() +
-  facet_wrap(~entity_type)+
-  scale_y_continuous("transaction amount/million", labels = scales::dollar) +
-  scale_x_date(date_breaks = "3 months") + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
-  m
-```
-ggplotly(p = m)
+contributions3<-contributions2%>%
+  filter(entity_type == c("CCM", "CAN", "COM", "PTY", "IND"))
 
+  m <-ggplot(data = contributions3, aes(x =transaction_date, y = transaction_amt, color = entity_type)) +
+    scale_shape_manual(values=8:nlevels(contributions2$entity_type)) + 
+    labs(title = "change of transaction amount among between 2010 and 2012 based on entity type")+
+    guides(color = guide_legend("entity type")) +
+    geom_smooth() +
+    facet_wrap(~entity_type)+
+    scale_y_continuous("transaction amount", labels=scales::dollar) +
+    scale_x_date(date_breaks = "2 months") + 
+    theme(axis.text.x = element_text(angle = 60, hjust = 1))
+    m
+  
+  large_entity<-c("ORG","PAC")
+ 
+  
+   entity_plot<-function(entities) {
+    contributions2 %>%
+      filter(entity_type == entities)
+   }
+   lapply(large_entity,FUN=entity_plot)
+   
+  plot<-function(entities2){
+    ggplot(entity_plot(entities2), aes(x =transaction_date, y = transaction_amt/1000)) +
+    labs(title = "change of transaction amount among between 2010 and 2012 based on entity type")+
+    guides(color = guide_legend("entity type")) +
+    geom_smooth() +
+    scale_y_continuous("transaction amount", labels=scales::dollar) +
+    scale_x_date(date_breaks = "2 months")
+  }
+  lapply(large_entity, FUN= plot)
+    
+```
+  
 
 ```{r,message=FALSE}
 ggplot(data = contributions2, aes(x = entity_type))+ 
