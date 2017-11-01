@@ -5,11 +5,6 @@ date: "October 31, 2017"
 output: html_document
 ---
 
-
-## Loading the data
-
-This project is so interesting and relevant to my life!
-
 ```{r,message=FALSE, warning  = FALSE}
 load("house_elections.rda")
 load("candidates.rda")
@@ -23,7 +18,7 @@ contributions <- contributions %>%
   full_join(candidates,by = "cand_id")
 
 contributions1<-contributions %>% 
-  select(cand_id,cand_ici, entity_type, transaction_amt, transaction_dt)
+  select(cand_id,cand_ici, entity_type, transaction_amt, transaction_dt,transaction_type)
 
 require(lubridate)
 contributions2<-contributions1 %>%
@@ -33,7 +28,7 @@ contributions2<-contributions1 %>%
 contributions2$entity_type[contributions2$entity_type==""] <-NA
 glimpse(contributions2)
 
-contributions3<-contributions2%>%
+contributions3<-contributions2 %>%
   filter(entity_type == c("CCM", "CAN", "COM", "PTY", "IND"))
 
   m <-ggplot(data = contributions3, aes(x =transaction_date, y = transaction_amt, color = entity_type)) +
@@ -49,7 +44,6 @@ contributions3<-contributions2%>%
   
   large_entity<-c("ORG","PAC")
  
-  
    entity_plot<-function(entities) {
     contributions2 %>%
       filter(entity_type == entities)
@@ -65,26 +59,29 @@ contributions3<-contributions2%>%
     scale_x_date(date_breaks = "2 months")
   }
   lapply(large_entity, FUN= plot)
-    
+ 
 ```
   
 
 ```{r,message=FALSE}
-ggplot(data = contributions2, aes(x = entity_type))+ 
-  labs(title = "change of transaction amount among between 2010 and 2012 on different entity type")+
-  guides(color = guide_legend("entity type")) +
-  geom_bar(aes(position= transaction_amt/1000000,fill = entity_type),stats="identity")
+
+ggplot(data = contributions2, aes(x = entity_type, y =transaction_amt/1000000))+
+  labs(x = "Transaction Type", y="Transaction Amount/million", title = "Transaction Amount in 2012 for Different Entity Type") +
+  scale_y_continuous(labels = scales::dollar) +
+  geom_bar(stat="identity")
+  
+  
 ```
- +  
-  scale_shape_manual(values=10:nlevels(comparison$entity_type)) 
- +
-  scale_y_continuous("transaction amount/million", labels = scales::dollar) +
-  scale_x_date(labels =  date_format("%Y-%m"), date_breaks = "3 months") + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
+```{r,message=FALSE}
+contribution3<- contributions2 %>%
+  filter(transaction_type== c("24E","24A"))
 
-
-
+ggplot(data = contribution3,aes(x = transaction_type, y = transaction_amt/1000000, fill = entity_type))+
+  labs( x = "Entity Type", y="Transaction Amount/million", title = "Transaction Amount in 2012 for Different Entity Type", fill="Transaction Type")+
+  scale_y_continuous(labels = scales::dollar) +
+  geom_bar(stat = "identity")
+```
 
 join candidates with contributions by cand_id
 compare cand_ici with entity_type
