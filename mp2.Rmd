@@ -24,10 +24,10 @@ contributions <- contributions %>%
   full_join(candidates,by = "cand_id")
 
 contributions1<-contributions %>% 
-  select(cand_id,cand_ici, entity_type, transaction_amt, transaction_dt)
+  select(cand_id,cand_ici, entity_type, transaction_amt, transaction_dt, transaction_type)
 
 require(lubridate)
-contributions2<-contributions1 %>%
+contributions2 <- contributions1 %>%
   mutate(transaction_date= mdy(`transaction_dt`)) %>%
   filter(transaction_date> "2012-01-01" & transaction_date <"2012-12-31")
 
@@ -56,20 +56,25 @@ ggplotly(p = m)
 
 
 ```{r,message=FALSE}
-ggplot(data = contributions2, aes(x = entity_type))+ 
-  labs(title = "change of transaction amount among between 2010 and 2012 on different entity type")+
+ggplot(data = contributions2, aes(x = entity_type, y =transaction_amt/1000000, fill = entity_type))+
+  labs(title = "Transaction Amount in 2012 for Different Entity Type")+
   guides(color = guide_legend("entity type")) +
-  geom_bar(aes(position= transaction_amt/1000000,fill = entity_type),stats="identity")
+  geom_bar(stat="identity")
 ```
- +  
-  scale_shape_manual(values=10:nlevels(comparison$entity_type)) 
- +
-  scale_y_continuous("transaction amount/million", labels = scales::dollar) +
-  scale_x_date(labels =  date_format("%Y-%m"), date_breaks = "3 months") + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
+```{r,message=FALSE}
+ 
 
+contributions2 %>%
+  filter(transaction_type =="24A",transaction_type =="24E", entity_type == "CCM")
+glimpse(contributions2)
+ggplot(data = contributions2,aes(x = transaction_type, y = transaction_amt/1000000, fill = transaction_type))+
+  geom_bar(stat = "identity")
 
+```
+
+plot<- function(data=data1,entity)
+lapply(contributions2$entity_type, FUN = plot)
 
 
 join candidates with contributions by cand_id
